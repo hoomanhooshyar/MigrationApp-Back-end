@@ -10,7 +10,7 @@ namespace Core.Interfaces
 {
     public interface IUserRepository
     {
-        Task<Result> Signup(User user);
+        Task<Result> Signup(Signup user);
         Task<User> Login(string username, string password);
 
     }

@@ -30,7 +30,7 @@ namespace Infrastructure.Data.Repositories
                 ).FirstOrDefault();
         }
 
-        public async Task<Result> Signup(User user)
+        public async Task<Result> Signup(Signup user)
         {
             Result result = new Result();
 
@@ -58,13 +58,27 @@ namespace Infrastructure.Data.Repositories
                 //End Check mobile 
                 else
                 {
+                    User usr = new User();
+                    usr.Name = user.Name;
+                    usr.Family = user.Family;
+                    usr.Username = user.Username;
+                    usr.Password = user.Password;
+                    usr.Email = user.Email;
+                    usr.Phone = user.Phone;
+                    usr.Mobile = user.Mobile;
+                    usr.Age = user.Age;
+                    usr.Image = user.Image;
+                    usr.Token = user.Token;
+                    usr.RoleId = user.RoleId;
+                    usr.Gender = user.Gender;
+                    usr.Status = user.Status;
                     var hashedToken = new Utils();
-                    string encodeToken = hashedToken.CreateToken(user);
-                    user.Token = encodeToken;
+                    string encodeToken = hashedToken.CreateToken(usr);
+                    usr.Token = encodeToken;
                     
 
                     //Insert user into table
-                    await _context.Users.AddAsync(user);
+                    await _context.Users.AddAsync(usr);
 
                     _context.SaveChanges();
 
@@ -72,10 +86,10 @@ namespace Infrastructure.Data.Repositories
                     //End Insert user into table
 
                     //Check user inserted
-                    if (user.Id > 0)
+                    if (usr.Id > 0)
                     {
-                        result.Status = user.RoleId;
-                        result.Message = user.Token;
+                        result.Status = usr.RoleId;
+                        result.Message = usr.Token;
 
                     }
                     else

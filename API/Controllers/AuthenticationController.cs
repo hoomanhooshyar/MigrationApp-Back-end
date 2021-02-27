@@ -39,7 +39,7 @@ namespace API.Controllers
         }
 
         [HttpPost("signup")]
-        public async Task<ActionResult<Result>> Signup(User user)
+        public async Task<ActionResult<Result>> Signup(Signup user)
         {
             
             var result = await _repository.Signup(user);
