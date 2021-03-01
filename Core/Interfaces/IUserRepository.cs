@@ -12,6 +12,7 @@ namespace Core.Interfaces
     {
         Task<Result> Signup(Signup user);
         Task<User> Login(string username, string password);
+        Task<UserDTO> GetUserData(string token);
 
     }
 }

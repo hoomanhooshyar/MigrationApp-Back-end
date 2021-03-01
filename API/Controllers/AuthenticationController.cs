@@ -41,9 +41,28 @@ namespace API.Controllers
         [HttpPost("signup")]
         public async Task<ActionResult<Result>> Signup(Signup user)
         {
-            
             var result = await _repository.Signup(user);
             return Ok(result);
+        }
+
+        [HttpPost("get_user_data")]
+        public async Task<ActionResult<UserDTO>> GetUserData()
+        {
+            StringValues headerValue;
+            Request.Headers.TryGetValue("HTTP_TOKEN", out headerValue);
+            var headerValueResult = headerValue.FirstOrDefault();
+            if(headerValueResult == null || headerValueResult == "")
+            {
+                var user = new UserDTO();
+                user.Id = -1;
+                user.Name = "fail";
+                return user;
+            }
+            else
+            {
+                var result = await _repository.GetUserData(headerValueResult);
+                return result;
+            }
         }
     }
 }

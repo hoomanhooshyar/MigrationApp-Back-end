@@ -1,13 +1,12 @@
 ﻿using Core.Entities;
 using Core.Interfaces;
 using Core.DTO;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using System.Security.Cryptography;
 using Infrastructure.UtilitiesClass;
+using Microsoft.Extensions.Primitives;
+using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace Infrastructure.Data.Repositories
 {
@@ -20,7 +19,9 @@ namespace Infrastructure.Data.Repositories
             _context = context;
         }
 
-        #pragma warning disable 1998
+        
+
+#pragma warning disable 1998
         public async Task<User> Login(string username, string password)
         {
 
@@ -101,6 +102,52 @@ namespace Infrastructure.Data.Repositories
                     return result;
                 }
             }
+        }
+
+        public async Task<UserDTO> GetUserData(string token)
+        {
+            var test = (from usr in _context.Users
+                        join sf in _context.StudyFields on usr.StudyField.Id equals sf.Id
+                        join cc in _context.CountryCities on usr.CountryCity.Id equals cc.Id
+                        where usr.Token == token
+                        select new { User = usr, StudyField = sf, CountryCity = cc }).FirstOrDefault();
+            try
+            {
+                var user = _context.Users
+                .Include(s => s.StudyField)
+                .Include(c => c.CountryCity)
+                .Where(
+                usr => usr.Token == token
+                ).FirstOrDefault();
+                return new UserDTO
+                {
+                    Id = user.Id,
+                    Age = user.Age,
+                    CountryCityId = user.CountryCity.Id,
+                    CountryCityTitle = user.CountryCity.Title,
+                    Credit = user.Credit,
+                    Email = user.Email,
+                    Family = user.Family,
+                    Gender = user.Gender,
+                    Image = user.Image,
+                    Mobile = user.Mobile,
+                    Name = user.Name,
+                    Password = user.Password,
+                    Phone = user.Phone,
+                    RoleId = user.RoleId,
+                    Setting = user.Setting,
+                    Status = user.Status,
+                    StudyFieldId = user.StudyField.Id,
+                    StudyFieldTitle = user.StudyField.Title,
+                    StudyFieldType = user.StudyField.Type,
+                    Username = user.Username
+                };
+            }catch(Exception e)
+            {
+               
+                return null;
+            }            
+            
         }
     }
 }
